@@ -7,6 +7,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"go.mozilla.org/sops/v3/age"
+	"go.mozilla.org/sops/v3/hcvault"
+	"go.mozilla.org/sops/v3/pgp"
 )
 
 type reverseCipher struct{}
@@ -727,4 +730,11 @@ func TestEmitAsMap(t *testing.T) {
 	if assert.NoError(t, err) {
 		assert.Equal(t, expected, data)
 	}
+}
+
+func TestSortKeyGroupIndices(t *testing.T) {
+	group := KeyGroup{&hcvault.MasterKey{}, &age.MasterKey{}, &pgp.MasterKey{}}
+	expected := []int{1, 2, 0}
+	indices := sortKeyGroupIndices(group)
+	assert.Equal(t, expected, indices)
 }
